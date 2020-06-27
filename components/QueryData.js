@@ -2,8 +2,10 @@ import colors from "../colors";
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert, CheckBox} from 'react-native';
 
+import { RadioButton } from 'react-native-paper';
 
-class AddData extends React.Component {
+
+class QueryData extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -32,8 +34,8 @@ class AddData extends React.Component {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
         <View style={{flex:1, alignContent: "center"}}>
-          <Text style={styles.tagtext}>Add over Routes</Text>
-          <Text style={styles.tagtextsmall}>Add data to models</Text>
+          <Text style={styles.tagtext}>Query over Routes</Text>
+          <Text style={styles.tagtextsmall}>Query data from models</Text>
           
         <View style={{flex:1, alignContent: "center" }}>
 
@@ -106,21 +108,44 @@ class Onecol extends React.Component {
       id: this.props.val,
       Url: "",
       method:"POST",
-      models_req : []
+      given : [],
+      query: [],
      };
-     this.changemodelsarr = this.changemodelsarr.bind(this);
+     this.setslelected = this.setslelected.bind(this);
   }
-  changemodelsarr(m,b){
-    var M = [];
-    for(var i=0;i<this.state.models_req.length;i++){
-      if(this.state.models_req[i] != m){
-        M.push(this.state.models_req[i]);
+  setslelected(selected, field, table){
+    var G = [];
+    var S = [];
+    for(var i=0;i<this.state.given.length;i++){
+      if(this.state.given[i].model != table || this.state.given[i].field != field){
+        G.push(this.state.given[i]);
       }
     }
-    if(b == true){ M.push(m); }
+    for(var i=0;i<this.state.query.length;i++){
+        if(this.state.query[i].model != table || this.state.query[i].field != field){
+          S.push(this.state.query[i]);
+        }
+    }
+    if(selected != "NULL"){
+        if(selected == "Given"){
+            G.push({
+                "model": table,
+                "field": field
+            })
+        }
+        else{
+            S.push({
+                "model": table,
+                "field": field
+            })
+        }
+    }
     this.setState({
-      models_req: M
+      given: G,
+      query: S,
     },()=>{
+        // console.log("GIVEN",this.state.given);
+        // console.log("SET",this.state.query);
       this.props.changefields({data : this.state}) 
     })
   }
@@ -153,15 +178,13 @@ class Onecol extends React.Component {
           <Picker.Item label="POST" value="POST" />
         </Picker>   
 
-        <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>
-         Data to store via this route</Text>
         <View>
           { this.props.models.map( (m) => 
-                <CheckModels 
+                <MakeBlocks 
                   key = {m.id}
-                  name = {m.TableName}
+                  table = {m}
                   val = {m.id}
-                  change={this.changemodelsarr}
+                  setslelected={this.setslelected}
                 />
              ) }
         </View>
@@ -170,26 +193,77 @@ class Onecol extends React.Component {
   }
 }
 
-class CheckModels extends React.Component {
+class MakeBlocks extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {  };
+    }
+    render() {
+        return (
+            <View>
+                <Text style={{backgroundColor:colors.red, color:"white", fontWeight:"700", padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>
+                    {this.props.table.TableName}
+                </Text>
+                {
+                    this.props.table.Fields.map( (f) =>
+                        <RadioModels 
+                            key = {f.id}
+                            FieldName = {f.FieldName}
+                            TableName = {this.props.table.TableName}
+                            setslelected={this.props.setslelected}
+                        />
+                    )
+                }
+            </View>
+        );
+    }
+}
+
+
+class RadioModels extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      checked:false
+      checked:"NULL"
      };
   }
   render() {
     return (
-      <View>
-      <View style={{ flexDirection: 'row' }}>
-        <CheckBox
-          value={this.state.checked}
-          onValueChange={() => this.setState({ checked: !this.state.checked },()=>{
-            this.props.change(this.props.name, this.state.checked);
-          })}
-        />
-        <Text style={{marginTop: 5}}>{this.props.name}</Text>
+      <View style={{flexDirection: "row", flex:1, alignItems:"center"}}>
+        <Text style={{flex:2,marginLeft:5,marginRight:5}} >{this.props.FieldName}</Text>
+        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:5,marginRight:15}}>
+            <Text>Given</Text>
+            <RadioButton
+            value="Given"
+            status={ this.state.checked === 'Given' ? 'checked' : 'unchecked' }
+            onPress={() => {
+                if(this.state.checked == "Given")
+                this.setState({checked : "NULL"},()=>{
+                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
+                })
+                else this.setState({checked: 'Given'},()=>{
+                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
+                })
+            }}
+            />
+        </View>
+        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:15,marginRight:5}}>
+            <Text >Query</Text>
+            <RadioButton 
+            value="Query"
+            status={ this.state.checked === 'Query' ? 'checked' : 'unchecked' }
+            onPress={() => {
+                if(this.state.checked == "Query")
+                this.setState({checked : "NULL"},()=>{
+                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
+                })
+                else this.setState({checked: 'Query'},()=>{
+                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
+                })
+            }}
+            />
+        </View>
       </View>
-    </View>
     );
   }
 }
@@ -275,4 +349,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AddData;
+export default QueryData;

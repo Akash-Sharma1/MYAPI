@@ -1,6 +1,6 @@
 import colors from "../colors";
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert, CheckBox} from 'react-native';
 
 
 class CreateModels extends React.Component {
@@ -112,15 +112,29 @@ class CreateModels extends React.Component {
 class Onecol extends React.Component {
   constructor(props) {
     super(props);
+    this.changekeys = this.changekeys.bind(this);
     this.state = { 
+      Constraints:[],
       id: this.props.val,
       FieldName : "",
-      selectedValue:"Integer",
-      selectedValuekey1:"None",
-      selectedValuekey2:"None",
-      selectedValuekey3:"None",
+      Datatype:"Integer",
       default : "None"
      };
+  }
+  changekeys(m,b){
+    var M = [];
+    for(var i=0;i<this.state.Constraints.length;i++){
+      if(this.state.Constraints[i] != m){
+        M.push(this.state.Constraints[i]);
+      }
+    }
+    if(b == true){ M.push(m); }
+    this.setState({
+      Constraints: M
+    },()=>{
+      console.log(this.state);
+      this.props.changefields({data : this.state}) 
+    })
   }
   render() {
     return (
@@ -138,11 +152,12 @@ class Onecol extends React.Component {
               selectionColor={colors.blue}
               onChangeText={ (e) => { this.setState({FieldName:e},()=>{this.props.changefields({data : this.state});} ) } }
           ></TextInput>
+
         <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>Data Type</Text>
         <Picker style={{flex:1 }} 
-          selectedValue={this.state.selectedValue}
+          selectedValue={this.state.Datatype}
           onValueChange={
-            (itemValue, itemIndex) => this.setState({selectedValue:itemValue},()=>{this.props.changefields({data : this.state});} )
+            (itemValue, itemIndex) => this.setState({Datatype:itemValue},()=>{this.props.changefields({data : this.state});} )
           }
           >
           <Picker.Item label="Integer" value="Integer" />
@@ -153,40 +168,11 @@ class Onecol extends React.Component {
         </Picker>
 
         <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>Constraints</Text>
-
-        <Picker style={{flex:1 , marginTop:5, marginBottom:5}}
-          selectedValue={this.state.selectedValuekey1}
-          onValueChange={
-            (itemValue, itemIndex) => this.setState({selectedValuekey1:itemValue},()=>{this.props.changefields({data : this.state});} )
-          }
-          >
-          <Picker.Item label="None" value="None" />
-          <Picker.Item label="Unique" value="Unique" />
-          <Picker.Item label="Primary Key" value="Primary Key" />
-          <Picker.Item label="Not Null" value="Not Null" />
-        </Picker>
-        <Picker style={{flex:1 , marginTop:5, marginBottom:5}}
-          selectedValue={this.state.selectedValuekey2}
-          onValueChange={
-            (itemValue, itemIndex) => this.setState({selectedValuekey2:itemValue},()=>{this.props.changefields({data : this.state});} )
-          }
-          >
-          <Picker.Item label="None" value="None" />
-          <Picker.Item label="Unique" value="Unique" />
-          <Picker.Item label="Primary Key" value="Primary Key" />
-          <Picker.Item label="Not Null" value="Not Null" />
-        </Picker>
-        <Picker style={{flex:1 , marginTop:5, marginBottom:5}}
-          selectedValue={this.state.selectedValuekey3}
-          onValueChange={
-            (itemValue, itemIndex) => this.setState({selectedValuekey3:itemValue},()=>{this.props.changefields({data : this.state});} )
-          }
-          >
-          <Picker.Item label="None" value="None" />
-          <Picker.Item label="Unique" value="Unique" />
-          <Picker.Item label="Primary Key" value="Primary Key" />
-          <Picker.Item label="Not Null" value="Not Null" />
-        </Picker>
+        {
+          [ "Primary Key", "Not Null", "Unique" ].map((k) =>
+            <CheckModels key={k} name={k}  change={this.changekeys} />
+          )
+        }
       
         <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>Default</Text>
         <TextInput style={{flex:1}}
@@ -196,6 +182,29 @@ class Onecol extends React.Component {
               onChangeText={ (e) => { this.setState({default:e},()=>{this.props.changefields({data : this.state});} ) } }
           ></TextInput>
       </View>     
+    );
+  }
+}
+class CheckModels extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
+      checked:false
+     };
+  }
+  render() {
+    return (
+      <View>
+      <View style={{ flexDirection: 'row' }}>
+        <CheckBox
+          value={this.state.checked}
+          onValueChange={() => this.setState({ checked: !this.state.checked },()=>{
+            this.props.change(this.props.name, this.state.checked);
+          })}
+        />
+        <Text style={{marginTop: 5}}>{this.props.name}</Text>
+      </View>
+    </View>
     );
   }
 }
