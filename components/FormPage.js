@@ -17,6 +17,8 @@ import QueryData from './QueryData';
 import VerifyModels from './VerifyModels';
 import VerifyRoutes from './VerifyRoutes';
 
+import data from './DemoData';
+
 export default class App extends React.Component {
     constructor(props){
         super(props);
@@ -34,10 +36,13 @@ export default class App extends React.Component {
             activeIndex:0,
 
             ProjectName: "",
-            Databaseinfo: {
-              Num_tables:"0"
-            },
-            Models: [],
+            // Databaseinfo: {
+            //   Num_tables:"0"
+            // },
+            // Models: [],
+            //for development
+            Databaseinfo : data.Databaseinfo,
+            Models: data.Models,
             AddDataRoutes : [],
             UpdateDataRoutes : [],
             QueryDataRoutes : [],
@@ -71,7 +76,7 @@ export default class App extends React.Component {
     }
 
     AddCrudpages(){
-      var st = (2 + parseInt(this.state.Databaseinfo.Num_tables));
+      var st = (3 + parseInt(this.state.Databaseinfo.Num_tables));
       var F = [];
       for(var i=0;i<st;i++){
         F.push(this.state.carouselItems[i]);
@@ -105,6 +110,17 @@ export default class App extends React.Component {
     }
 
     MakeAPI(){
+      var X = {
+        "AddDataRoutes" : this.state.AddDataRoutes,
+        'UpdateDataRoutes' : this.state.UpdateDataRoutes,
+        "QueryDataRoutes" : this.state.QueryDataRoutes,
+        "DeleteDataRoutes" : this.state.DeleteDataRoutes,
+        "ProjectName": this.state.ProjectName,
+        "Databaseinfo": this.state.Databaseinfo,
+        "Models": this.state.Models,
+      };
+      var Y = json.stringify(X);
+      console.log(Y);
       return;
     }
 

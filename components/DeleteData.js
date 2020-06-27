@@ -2,8 +2,6 @@ import colors from "../colors";
 import React from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert, CheckBox} from 'react-native';
 
-import { RadioButton } from 'react-native-paper';
-
 
 class QueryData extends React.Component {
   constructor(props) {
@@ -111,41 +109,43 @@ class Onecol extends React.Component {
       given : [],
       delete: [],
      };
-     this.setslelected = this.setslelected.bind(this);
+     this.setDelete = this.setDelete.bind(this);
+     this.setslelectedGiven = this.setslelectedGiven.bind(this);
   }
-  setslelected(selected, field, table){
+  setDelete(selected , table){
+    var D = [];
+    for(var i=0;i<this.state.delete.length;i++){
+      if(this.state.delete[i] != table){
+        D.push(this.state.delete[i]);
+      }
+    }
+    if(selected){
+      D.push(table)
+    }
+    this.setState({
+      delete: D,
+    },()=>{
+      // console.log("Delete",this.state.delete);
+      this.props.changefields({data : this.state}) 
+    })
+  }
+  setslelectedGiven(selected, field, table){
     var G = [];
-    var S = [];
     for(var i=0;i<this.state.given.length;i++){
       if(this.state.given[i].model != table || this.state.given[i].field != field){
         G.push(this.state.given[i]);
       }
     }
-    for(var i=0;i<this.state.delete.length;i++){
-        if(this.state.delete[i].model != table || this.state.delete[i].field != field){
-          S.push(this.state.delete[i]);
-        }
-    }
-    if(selected != "NULL"){
-        if(selected == "Given"){
-            G.push({
-                "model": table,
-                "field": field
-            })
-        }
-        else{
-            S.push({
-                "model": table,
-                "field": field
-            })
-        }
+    if(selected){
+      G.push({
+          "model": table,
+          "field": field
+      })
     }
     this.setState({
       given: G,
-      delete: S,
     },()=>{
-        // console.log("GIVEN",this.state.given);
-        // console.log("SET",this.state.delete);
+      // console.log("GIVEN",this.state.given);
       this.props.changefields({data : this.state}) 
     })
   }
@@ -184,7 +184,8 @@ class Onecol extends React.Component {
                   key = {m.id}
                   table = {m}
                   val = {m.id}
-                  setslelected={this.setslelected}
+                  setslelectedGiven={this.setslelectedGiven}
+                  setDelete={this.setDelete}
                 />
              ) }
         </View>
@@ -196,77 +197,73 @@ class Onecol extends React.Component {
 class MakeBlocks extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {  };
+        this.state = { 
+          checked : false
+         };
     }
     render() {
         return (
             <View>
-                <Text style={{backgroundColor:colors.red, color:"white", fontWeight:"700", padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>
-                    {this.props.table.TableName}
+              <View style={{backgroundColor:colors.red, padding:10, borderRadius:50,marginTop:5, marginBottom:5,
+                flexDirection:"row", alignItems:"center", justifyContent:"space-between"}}>
+                
+                <Text style={{ color:"white", fontWeight:"700", flex:2}}>
+                  {this.props.table.TableName}
                 </Text>
-                {
-                    this.props.table.Fields.map( (f) =>
-                        <RadioModels 
-                            key = {f.id}
-                            FieldName = {f.FieldName}
-                            TableName = {this.props.table.TableName}
-                            setslelected={this.props.setslelected}
-                        />
-                    )
-                }
+                <View style={{flex:1 , flexDirection:"row",alignItems:"center"}}>
+                  <Text style={{ color:"white", fontWeight:"700", flex:2}}>
+                    Delete
+                  </Text>
+                  <CheckBox 
+                    value={this.state.checked}
+                    onValueChange={() => this.setState({ checked: !this.state.checked },()=>{
+                      this.props.setDelete(this.state.checked, this.props.table.TableName);
+                    })}
+                  />
+                </View>
+
+              </View>
+              {
+                  this.props.table.Fields.map( (f) =>
+                      <CheckModels 
+                          key = {f.id}
+                          FieldName = {f.FieldName}
+                          TableName = {this.props.table.TableName}
+                          setslelected={this.props.setslelectedGiven}
+                      />
+                  )
+              }
             </View>
         );
     }
 }
 
 
-class RadioModels extends React.Component {
+class CheckModels extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      checked:"NULL"
+      checked:false
      };
   }
   render() {
     return (
       <View style={{flexDirection: "row", flex:1, alignItems:"center"}}>
-        <Text style={{flex:2,marginLeft:5,marginRight:5}} >{this.props.FieldName}</Text>
-        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:5,marginRight:15}}>
-            <Text>Given</Text>
-            <RadioButton
-            value="Given"
-            status={ this.state.checked === 'Given' ? 'checked' : 'unchecked' }
-            onPress={() => {
-                if(this.state.checked == "Given")
-                this.setState({checked : "NULL"},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-                else this.setState({checked: 'Given'},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-            }}
-            />
+        <Text style={{flex:2.2,marginLeft:5,marginRight:5}} >{this.props.FieldName}</Text>
+        <View style={{flex:1, flexDirection:"row", alignItems:"center"}}>
+          <Text>Given</Text>
+          <CheckBox
+            value={this.state.checked}
+            onValueChange={() => this.setState({ checked: !this.state.checked },()=>{
+              this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
+            })}
+          />
         </View>
-        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:15,marginRight:5}}>
-            <Text >Delete</Text>
-            <RadioButton 
-            value="Delete"
-            status={ this.state.checked === 'Delete' ? 'checked' : 'unchecked' }
-            onPress={() => {
-                if(this.state.checked == "Delete")
-                this.setState({checked : "NULL"},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-                else this.setState({checked: 'Delete'},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-            }}
-            />
-        </View>
-      </View>
+    </View>
     );
   }
 }
+
 
 const styles = StyleSheet.create({
   scrollView:{

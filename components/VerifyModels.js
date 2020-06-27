@@ -1,22 +1,54 @@
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Button , TextInput } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button , Alert } from 'react-native';
 import colors from "../colors";
 
 class VerifyModels extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {  };
+        this.state = { 
+            ErrorLog : "Waiting for the results please wait..."
+         };
     }
     render() {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={{flex:3, alignContent: "center"}}>
-                <Text style={styles.tagtext}>Design Your Own Api</Text>
+                <Text style={styles.tagtext}>Quick check</Text>
+                <View style={{
+                    borderWidth:1,
+                    borderRadius:5,
+                    padding:10,
+                    marginBottom:20,
+                }}>
+                    <Text style={{ color:colors.yellow, fontWeight:"700" }}>Error Logs:</Text>
+                    <Text>
+                        {this.state.ErrorLog}
+                    </Text>
+                </View>
+                <View style={{
+                    borderWidth:1,
+                    borderRadius:5,
+                    padding:10,
+                    margintop:10,
+                }}>
+                    <Text style={{ color:colors.yellow, fontWeight:"700" }}>Instructions:</Text>
+                    <Text style={{color:"#fff"}}>
+                        You can press the "Ready?" button to unlock remaining steps.
+                        In the next few steps you will define urls to manage your data.
+                        the routes will be created accordingly, note: "Given" keyword means that you have to provide
+                        the data so that a particular record is selected (in update, delete and querying the data), if you haven't selected anything in given. 
+                        By deafult all of the records in the tables are selected.
+                    </Text>
+                </View>
                 </View>
                 <View style={styles.btn}>
                 <Button 
-                    title="Swipe"
-                    color={colors.red}
+                    title="Ready?"
+                    color={colors.blue}
+                    onPress={()=>{
+                        Alert.alert("Unlocked");
+                        this.props.proceed();}
+                    }
                 />
                 </View>
             </SafeAreaView>
@@ -32,21 +64,11 @@ const styles = StyleSheet.create({
       paddingLeft:20,
       paddingRight:20,
       paddingTop:20,
-      backgroundColor: colors.white,
+      backgroundColor: colors.red,
       flexGrow: 100,
     },
-    textInput:{
-      marginTop:5,
-      marginBottom:5,
-      padding: 10,
-      height: 40,
-      borderRadius:5,
-      color: "#000000",
-      borderColor: "#000000",
-      borderWidth: 1,
-    },
     tagtext:{
-      color: colors.red,
+      color: "white",
       marginTop: 50,
       marginBottom: 100,
       fontSize: 50,

@@ -1,6 +1,6 @@
 import colors from "../colors";
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert, CheckBox} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Picker, ScrollView , TextInput, Alert} from 'react-native';
 
 import { RadioButton } from 'react-native-paper';
 

@@ -113,7 +113,7 @@ class Onecol extends React.Component {
      };
      this.setslelected = this.setslelected.bind(this);
   }
-  setslelected(selected, field, table){
+  setslelected(selectedG, selectedQ, field, table){
     var G = [];
     var S = [];
     for(var i=0;i<this.state.given.length;i++){
@@ -126,26 +126,24 @@ class Onecol extends React.Component {
           S.push(this.state.query[i]);
         }
     }
-    if(selected != "NULL"){
-        if(selected == "Given"){
-            G.push({
-                "model": table,
-                "field": field
-            })
-        }
-        else{
-            S.push({
-                "model": table,
-                "field": field
-            })
-        }
+    if(selectedG){
+      G.push({
+          "model": table,
+          "field": field
+      })
+    }
+    if(selectedQ){
+      S.push({
+          "model": table,
+          "field": field
+      })
     }
     this.setState({
       given: G,
       query: S,
     },()=>{
-        // console.log("GIVEN",this.state.given);
-        // console.log("SET",this.state.query);
+      // console.log("GIVEN",this.state.given);
+      // console.log("Query",this.state.query);
       this.props.changefields({data : this.state}) 
     })
   }
@@ -206,7 +204,7 @@ class MakeBlocks extends React.Component {
                 </Text>
                 {
                     this.props.table.Fields.map( (f) =>
-                        <RadioModels 
+                        <CheckModels 
                             key = {f.id}
                             FieldName = {f.FieldName}
                             TableName = {this.props.table.TableName}
@@ -219,54 +217,42 @@ class MakeBlocks extends React.Component {
     }
 }
 
-
-class RadioModels extends React.Component {
+class CheckModels extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      checked:"NULL"
+      checkedgiven:false,
+      checkedquery:false
      };
   }
   render() {
     return (
       <View style={{flexDirection: "row", flex:1, alignItems:"center"}}>
-        <Text style={{flex:2,marginLeft:5,marginRight:5}} >{this.props.FieldName}</Text>
-        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:5,marginRight:15}}>
-            <Text>Given</Text>
-            <RadioButton
-            value="Given"
-            status={ this.state.checked === 'Given' ? 'checked' : 'unchecked' }
-            onPress={() => {
-                if(this.state.checked == "Given")
-                this.setState({checked : "NULL"},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-                else this.setState({checked: 'Given'},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-            }}
-            />
+        <Text style={{flex:2.2,marginLeft:5,marginRight:5}} >{this.props.FieldName}</Text>
+        <View style={{flexDirection:"row", alignItems:"center"}}>
+          <Text>Given</Text>
+          <CheckBox
+            value={this.state.checkedgiven}
+            onValueChange={() => this.setState({ checkedgiven: !this.state.checked },()=>{
+              this.props.setslelected(this.state.checkedgiven, this.state.checkedquery, this.props.FieldName, this.props.TableName);
+            })}
+          />
         </View>
-        <View style={{flexDirection:"row",alignItems:"center",flex:1,marginLeft:15,marginRight:5}}>
-            <Text >Query</Text>
-            <RadioButton 
-            value="Query"
-            status={ this.state.checked === 'Query' ? 'checked' : 'unchecked' }
-            onPress={() => {
-                if(this.state.checked == "Query")
-                this.setState({checked : "NULL"},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-                else this.setState({checked: 'Query'},()=>{
-                    this.props.setslelected(this.state.checked, this.props.FieldName, this.props.TableName);
-                })
-            }}
-            />
+        <View style={{flexDirection:"row", alignItems:"center"}}>
+          <Text>Get</Text>
+          <CheckBox
+            value={this.state.checkedquery}
+            onValueChange={() => this.setState({ checkedquery: !this.state.checked },()=>{
+              this.props.setslelected(this.state.checkedgiven, this.state.checkedquery, this.props.FieldName, this.props.TableName);
+            })}
+          />
         </View>
-      </View>
+    </View>
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   scrollView:{

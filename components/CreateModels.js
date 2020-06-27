@@ -97,7 +97,7 @@ class CreateModels extends React.Component {
                 TableName: this.state.Table_name,
                 Fields: this.state.Fields
               });
-              Alert.alert("Added!!\nYou can swipe now...");
+              Alert.alert("Added!");
             }}
           />
         </View>
@@ -132,7 +132,7 @@ class Onecol extends React.Component {
     this.setState({
       Constraints: M
     },()=>{
-      console.log(this.state);
+      // console.log(this.state);
       this.props.changefields({data : this.state}) 
     })
   }
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
       flex: 1,
       paddingLeft:20,
       paddingTop:20,
-      backgroundColor: colors.red,
+      backgroundColor: colors.blue,
       flexGrow: 100,
     },
     textInput:{
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
     },
     tagtext:{
-      color: "black",
+      color: "white",
       marginTop: 50,
       marginBottom: 50,
       fontSize: 50,

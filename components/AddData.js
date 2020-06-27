@@ -154,7 +154,7 @@ class Onecol extends React.Component {
         </Picker>   
 
         <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>
-         Data to store via this route</Text>
+         Data to store</Text>
         <View>
           { this.props.models.map( (m) => 
                 <CheckModels 
