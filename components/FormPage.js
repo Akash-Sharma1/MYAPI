@@ -17,7 +17,6 @@ import QueryData from './QueryData';
 import VerifyModels from './VerifyModels';
 import VerifyRoutes from './VerifyRoutes';
 
-import data from './DemoData';
 
 export default class App extends React.Component {
     constructor(props){
@@ -36,13 +35,13 @@ export default class App extends React.Component {
             activeIndex:0,
 
             ProjectName: "",
-            // Databaseinfo: {
-            //   Num_tables:"0"
-            // },
-            // Models: [],
+            Databaseinfo: {
+              Num_tables:"0"
+            },
+            Models: [],
             //for development
-            Databaseinfo : data.Databaseinfo,
-            Models: data.Models,
+            // Databaseinfo : data.Databaseinfo,
+            // Models: data.Models,
             AddDataRoutes : [],
             UpdateDataRoutes : [],
             QueryDataRoutes : [],
@@ -119,7 +118,8 @@ export default class App extends React.Component {
         "Databaseinfo": this.state.Databaseinfo,
         "Models": this.state.Models,
       };
-      var Y = json.stringify(X);
+      // console.log(X);
+      var Y = JSON.stringify(X);
       console.log(Y);
       return;
     }
