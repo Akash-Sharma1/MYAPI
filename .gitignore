@@ -9,6 +9,7 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
+Backend/CRUD/CRUD/settings.py
 
 # macOS
 .DS_Store
