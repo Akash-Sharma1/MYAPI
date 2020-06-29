@@ -155,13 +155,13 @@ export default class App extends React.Component {
     deleteRoutes(R){
       // console.log(R);
       this.setState({
-        UpdateDataRoutes : R
+        DeleteDataRoutes : R
       })
     }
     updateRoutes(R){
       //  console.log(R);
       this.setState({
-        DeleteDataRoutes : R
+        UpdateDataRoutes : R
       })
     }
     queryRoutes(R){
