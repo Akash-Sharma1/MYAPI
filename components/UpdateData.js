@@ -44,9 +44,11 @@ class UpdateData extends React.Component {
             <TextInput
               style={styles.textInput}
               value= {(this.state.num != 0) ? this.state.num.toString() : ""}
-              placeholder="Number of Routes"
+              placeholder="Number of Routes  (max: 10)"
               selectionColor={colors.blue}
-              onChangeText={ (e) => {
+              onChangeText={ (e) => {                
+                if(e=="" ||(e[e.length-1] >= '0' && e[e.length-1] <= '9')){}else return;
+                if(parseInt(e) > 10){e = "10"};
                 if(e=="")e = "0";
                   e = parseInt(e);
                   this.setState({num:e})
@@ -59,13 +61,16 @@ class UpdateData extends React.Component {
                 title="Routes"
                 color={colors.red}
                 onPress={()=>{
-                    var cols = [];
-                    for(var i=0;i<this.state.num;i++){
-                      cols.push(i);
-                    }
-                    this.setState({
-                      value: cols
-                    });
+                  var cols = [] , F = []; 
+                  for(var i=0;i<this.state.num;i++){
+                    cols.push(i);
+                  }
+                  for(var i=0;i<Math.min(this.state.num , this.state.Routes.length);i++){ F.push(this.state.Routes[i]); }
+                  for(var i=Math.min(this.state.num , this.state.Routes.length);i<this.state.num;i++){ F.push({id : i}); }
+                  this.setState({
+                    value: cols,
+                    Routes : F
+                  });
                 }}
               />
             </View>

@@ -6,7 +6,8 @@ class VerifyRoutes extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
-            ErrorLog : "Waiting for the results please wait..."
+            ErrorLog : "Waiting for the results please wait...",
+            OK : false,
          };
     }
     render() {
@@ -32,8 +33,10 @@ class VerifyRoutes extends React.Component {
                     margintop:10,
                 }}>
                     <Text style={{ color:colors.yellow, fontWeight:"700" }}>Instructions:</Text>
-                    <Text style={{color:"#fff"}}>
-                        Please Wait while we check for errors and make you awesome Api.
+                    <Text style={{color:"#fff"}} >
+                        Your API look cool... :)
+                        Note - After the built is finished you can check your make-api-extension and select "Get Project" from Command pallete in VSCode.
+                        if you dont have "make-api-extension" yet you can download it from VSCode marketplace.
                     </Text>
                 </View>
                 </View>
@@ -43,8 +46,9 @@ class VerifyRoutes extends React.Component {
                     color={colors.blue}
                     onPress={()=>{
                         Alert.alert("Built");
-                        this.props.proceed();}
-                    }
+                        this.setState({ OK : true });
+                        this.props.proceed();
+                    }}
                 />
                 </View>
             </SafeAreaView>

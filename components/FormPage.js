@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { Text,  View,  SafeAreaView } from 'react-native';
+import { Text,  View,  SafeAreaView, Alert } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import { Dimensions } from 'react-native';
-import colors from '../colors'
+import colors from '../colors';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-import ProjectNamePage from './ProjectNamePage';
 import CreateDatabases from './CreateDatabases';
 import CreateModels from './CreateModels';
 import AddData from './AddData';
@@ -48,13 +48,12 @@ export default class App extends React.Component {
             DeleteDataRoutes : [],
 
             carouselItems: [
-                <ProjectNamePage changeprojectname={(e) => this.setState({ProjectName:e})} /> ,
-                <CreateDatabases addinfo={(e) => {
+                <CreateDatabases 
+                  changeprojectname={(e) => this.setState({ProjectName:e})} 
+                  addinfo={(e) => {
                   this.setState({Databaseinfo : e},()=>{ 
                       this.UpdateCaraousal(this.state.Databaseinfo.Num_tables)
-                    });
-                  }
-                } />
+                    });}} />
             ]
         }
     }
@@ -70,12 +69,13 @@ export default class App extends React.Component {
       this.setState({
         Models : M
       }, ()=>{
-          // console.log(this.state.Models);
+          
+        // console.log(this.state.Models);
       })
     }
 
     AddCrudpages(){
-      var st = (3 + parseInt(this.state.Databaseinfo.Num_tables));
+      var st = (2 + parseInt(this.state.Databaseinfo.Num_tables));
       var F = [];
       for(var i=0;i<st;i++){
         F.push(this.state.carouselItems[i]);
@@ -95,12 +95,16 @@ export default class App extends React.Component {
       );
       
       F.push(
-        <VerifyRoutes Data={{
+        <VerifyRoutes 
+        getModels= {()=> {
+          return Data={
             AddDataRoutes : this.state.AddDataRoutes,
             UpdateDataRoutes : this.state.UpdateDataRoutes,
             QueryDataRoutes : this.state.QueryDataRoutes,
             DeleteDataRoutes : this.state.DeleteDataRoutes,
-          }} proceed={this.MakeAPI}/>
+            }
+        } }
+        proceed={this.MakeAPI}/>
       )
 
       this.setState({
@@ -110,6 +114,9 @@ export default class App extends React.Component {
 
     MakeAPI(){
       var X = {
+        "username" : "Akash Sharma",
+        "password" : "123456789",
+        "email": "email.com",
         "AddDataRoutes" : this.state.AddDataRoutes,
         'UpdateDataRoutes' : this.state.UpdateDataRoutes,
         "QueryDataRoutes" : this.state.QueryDataRoutes,
@@ -118,28 +125,33 @@ export default class App extends React.Component {
         "Databaseinfo": this.state.Databaseinfo,
         "Models": this.state.Models,
       };
-      // console.log(X);
       var Y = JSON.stringify(X);
       console.log(Y);
+
+      axios.post('https://makeapibackend.herokuapp.com/', Y)
+       .then(response => {
+        console.log("YES",response);
+      }).catch(response =>{
+        console.log("ERR", response);
+      })
       return;
     }
+
 
     UpdateCaraousal(num){
       num=parseInt(num);
       var F = [];
       F.push(this.state.carouselItems[0]);
-      F.push(this.state.carouselItems[1]);
       for(var i=0;i<num;i++){
         F.push(
           <CreateModels table_num={i}  addtable={this.UpdateModel} />
         )
       }
       F.push(
-        <VerifyModels Data={{
-            ProjectName: this.state.ProjectName,
-            Databaseinfo: this.state.Databaseinfo,
-            Models: this.state.Models,
-          }} proceed={this.AddCrudpages}/>
+        <VerifyModels 
+            getModels= {()=> {return this.state.Models} }
+            numoftables = {this.state.Databaseinfo.Num_tables}
+            proceed={this.AddCrudpages}/>
       )
       this.setState({
         carouselItems : F

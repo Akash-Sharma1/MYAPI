@@ -1,4 +1,6 @@
-{
+Data = {
+    "username": "Demo",
+    "password": "2345", 
     "AddDataRoutes": [{
         "id": 0,
         "Url": "Store/emp",
@@ -10,7 +12,7 @@
         "method": "POST",
         "models_req": ["Tasks"]
     }],
-    "UpdateDataRoutes": [{
+    "DeleteDataRoutes": [{
         "id": 0,
         "Url": "Delete/emp",
         "method": "GET",
@@ -90,7 +92,7 @@
             "field": "Assigned"
         }]
     }],
-    "DeleteDataRoutes": [{
+    "UpdateDataRoutes": [{
         "id": 0,
         "Url": "Update/emp",
         "method": "POST",

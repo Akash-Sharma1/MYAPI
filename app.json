@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MApi",
-    "slug": "MApi",
+    "name": "MakeAPI",
+    "slug": "makeapi",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "make API without writing any code."
   }
 }

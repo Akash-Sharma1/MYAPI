@@ -10,10 +10,11 @@ class CreateModels extends React.Component {
       num: 1,
       value: [0],
       Table_name:"",
-      Fields:[]
+      Fields:[],
      };
      this.changefields = this.changefields.bind(this);
   }
+  
   changefields(data){
     var F = [];
     for(var i=0;i<this.state.Fields.length;i++){
@@ -33,7 +34,7 @@ class CreateModels extends React.Component {
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
         <View style={{flex:1, alignContent: "center"}}>
-          <Text style={styles.tagtext}>Model {this.props.table_num }</Text>
+          <Text style={styles.tagtext}>Table {this.props.table_num }</Text>
           
         <View style={{flex:1, alignContent: "center" }}>
           
@@ -49,9 +50,11 @@ class CreateModels extends React.Component {
             <TextInput
               style={styles.textInput}
               value= {(this.state.num != 0) ? this.state.num.toString() : ""}
-              placeholder="Number of columns"
+              placeholder="Number of columns (max: 10)"
               selectionColor={colors.blue}
-              onChangeText={ (e) => {
+              onChangeText={ (e) => {           
+                if(e=="" ||(e[e.length-1] >= '0' && e[e.length-1] <= '9')){}else return;
+                if(e > "10"){e = "10"};
                 if(e=="")e = "0";
                   e = parseInt(e);
                   this.setState({num:e})
@@ -64,18 +67,20 @@ class CreateModels extends React.Component {
                 title="Columns"
                 color={colors.yellow}
                 onPress={()=>{
-                    var cols = [];
+                    var cols = [] , F = []; 
                     for(var i=0;i<this.state.num;i++){
                       cols.push(i);
                     }
+                    for(var i=0;i<Math.min(this.state.num , this.state.Fields.length);i++){ F.push(this.state.Fields[i]); }
+                    for(var i=Math.min(this.state.num , this.state.Fields.length);i<this.state.num;i++){ F.push({id : i}); }
                     this.setState({
-                      value: cols
+                      value: cols,
+                      Fields : F
                     });
                 }}
               />
             </View>
           </View>
-          
 
           <View style={{flex:5}}>
             {this.state.value.map( (v) => <Onecol 
@@ -85,9 +90,7 @@ class CreateModels extends React.Component {
             /> )}
           </View>
 
-          <View style={{
-            flex:1,marginBottom:50,marginTop:50
-          }}>
+          <View style={{ marginTop:150 , marginBottom : 50 , flex:1 }}>
           <Button
             title="Submit"
             color={colors.yellow}
@@ -117,7 +120,7 @@ class Onecol extends React.Component {
       Constraints:[],
       id: this.props.val,
       FieldName : "",
-      Datatype:"Integer",
+      Datatype:"IntegerField",
       default : "None"
      };
   }
@@ -160,16 +163,17 @@ class Onecol extends React.Component {
             (itemValue, itemIndex) => this.setState({Datatype:itemValue},()=>{this.props.changefields({data : this.state});} )
           }
           >
-          <Picker.Item label="Integer" value="Integer" />
-          <Picker.Item label="Text" value="Text" />
-          <Picker.Item label="Decimal" value="Decimal" />
-          <Picker.Item label="Date" value="Date" />
-          <Picker.Item label="Time" value="Time" />
+          <Picker.Item label="IntegerField" value="IntegerField" />
+          <Picker.Item label="CharField" value="CharField" />
+          <Picker.Item label="TextField" value="TextField" />
+          <Picker.Item label="DateField" value="DateField" />
+          <Picker.Item label="EmailField" value="EmailField" />
+          <Picker.Item label="URLField" value="URLField" />
         </Picker>
 
         <Text style={{backgroundColor:colors.light_grey, padding:10, borderRadius:50,marginTop:5, marginBottom:5}}>Constraints</Text>
         {
-          [ "Primary Key", "Not Null", "Unique" ].map((k) =>
+          [ "primary_key", "null", "unique" ].map((k) =>
             <CheckModels key={k} name={k}  change={this.changekeys} />
           )
         }
@@ -179,6 +183,7 @@ class Onecol extends React.Component {
               style={styles.textInput}
               placeholder="None"
               selectionColor={colors.blue}
+              value = { ( this.state.Datatype == "DateField" ) ? "auto_now_add" : this.state.default}
               onChangeText={ (e) => { this.setState({default:e},()=>{this.props.changefields({data : this.state});} ) } }
           ></TextInput>
       </View>     
@@ -261,26 +266,6 @@ const styles = StyleSheet.create({
         fontSize: 25
     },
 
-    btn:
-    {
-        position: 'absolute',
-        right: 25,
-        bottom: 25,
-        borderRadius: 30,
-        width: 60,
-        height: 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        padding: 15
-    },
-
-    btnImage:
-    {
-        resizeMode: 'contain',
-        width: '100%',
-        tintColor: 'white'
-    }
 });
 
 export default CreateModels;

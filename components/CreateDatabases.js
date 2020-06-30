@@ -6,69 +6,51 @@ import { StyleSheet, Text, View, SafeAreaView, Button , TextInput,Alert} from 'r
 class CreateDatabases extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      Db: "",
-      User: "",
-      Host: "",
-      Password: "",
-      Num_tables: "",  
+    this.state = {
+      ProjectName : "",
+      Num_tables: "",
     };
   }
-  changefields(data){
-    var F = [];
-    for(var i=0;i<this.state.Fields.length;i++){
-      if(this.state.Fields[i].id != data.data.id){
-        F.push(this.state.Fields[i]);
-      }
-    }
-    F.push(data.data);
-    this.setState({Fields : F});
-  } 
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={{flex:3, alignContent: "center"}}>
-          <Text style={styles.tagtext}>Create Database</Text>
+          <Text style={styles.tagtext}>Design your own api</Text>
           <View >
-            <TextInput
-              style={styles.textInput}
-              placeholder="Database Name"
-              selectionColor={colors.blue}
-              onChangeText={(e) => this.setState({ Db: e})}
+             <TextInput
+                style={styles.textInput}  
+                placeholder="Project Name (only alphabets)"
+                selectionColor={colors.blue}
+                value= {this.state.ProjectName}
+                onChangeText={ (e) => {
+                  if( e=="" || (e[e.length-1] >= 'a' && e[e.length-1] <= 'z') || (e[e.length-1] >= 'A' && e[e.length-1] <= 'Z') ){}else return;
+                  this.setState({ ProjectName: e})
+                }}
             ></TextInput>
               <TextInput
                 style={styles.textInput}
-                placeholder="User"
+                placeholder="Number of tables required  (max: 10)"
                 selectionColor={colors.blue}
-                onChangeText={(e) => this.setState({ User: e})}
-            ></TextInput>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Password"
-                selectionColor={colors.blue}
-                onChangeText={(e) => this.setState({ Password: e})}
-            ></TextInput>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Host"
-                selectionColor={colors.blue}
-                onChangeText={(e) => this.setState({ Host: e})}
-            ></TextInput>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Number of tables required"
-                selectionColor={colors.blue}
-                onChangeText={(e) => this.setState({ Num_tables: e})}
+                value= {(this.state.Num_tables != 0) ? this.state.Num_tables.toString() : ""}
+                onChangeText={ (e) => {     
+                  if(e=="" ||(e[e.length-1] >= '0' && e[e.length-1] <= '9')){}else return;
+                  if(parseInt(e) > 10){e = "10"};
+                  if(e=="")e = "0";
+                    e = parseInt(e);
+                    this.setState({ Num_tables: e})
+                } }
             ></TextInput>
           </View>
         </View>
         <View style={styles.btn}>
           <Button
             title="Confirm"
-            color={colors.red}
+            color={(this.state.projectName == "" || this.state.Num_tables == "") ? colors.gray : colors.red}
             onPress={()=>{
+              if(this.state.projectName == "" || this.state.Num_tables == "")return;
               this.props.addinfo(this.state);
-              Alert.alert("Created");
+              Alert.alert("Swipe");
             }}
           />
         </View>
