@@ -54,7 +54,7 @@ class CreateModels extends React.Component {
               selectionColor={colors.blue}
               onChangeText={ (e) => {           
                 if(e=="" ||(e[e.length-1] >= '0' && e[e.length-1] <= '9')){}else return;
-                if(e > "10"){e = "10"};
+                if(parseInt(e) > 10){e = "10"};
                 if(e=="")e = "0";
                   e = parseInt(e);
                   this.setState({num:e})

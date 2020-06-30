@@ -35,6 +35,8 @@ export default class App extends React.Component {
             activeIndex:0,
 
             ProjectName: "",
+            Username: "",
+            Password: "",
             Databaseinfo: {
               Num_tables:"0"
             },
@@ -49,6 +51,11 @@ export default class App extends React.Component {
 
             carouselItems: [
                 <CreateDatabases 
+                  savedetails = { (u,p) => {
+                    this.setState({
+                    username : u,
+                    password : p
+                  })}}
                   changeprojectname={(e) => this.setState({ProjectName:e})} 
                   addinfo={(e) => {
                   this.setState({Databaseinfo : e},()=>{ 
@@ -114,9 +121,8 @@ export default class App extends React.Component {
 
     MakeAPI(){
       var X = {
-        "username" : "Akash Sharma",
-        "password" : "123456789",
-        "email": "email.com",
+        "username" : this.state.username,
+        "password" : this.state.password,
         "AddDataRoutes" : this.state.AddDataRoutes,
         'UpdateDataRoutes' : this.state.UpdateDataRoutes,
         "QueryDataRoutes" : this.state.QueryDataRoutes,
