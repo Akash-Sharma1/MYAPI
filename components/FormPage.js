@@ -123,20 +123,21 @@ export default class App extends React.Component {
       var X = {
         "username" : this.state.username,
         "password" : this.state.password,
+        "ProjectName": this.state.ProjectName,
         "AddDataRoutes" : this.state.AddDataRoutes,
         'UpdateDataRoutes' : this.state.UpdateDataRoutes,
         "QueryDataRoutes" : this.state.QueryDataRoutes,
         "DeleteDataRoutes" : this.state.DeleteDataRoutes,
-        "ProjectName": this.state.ProjectName,
         "Databaseinfo": this.state.Databaseinfo,
         "Models": this.state.Models,
       };
       var Y = JSON.stringify(X);
-      console.log(Y);
+      // console.log(Y);
 
       axios.post('https://makeapibackend.herokuapp.com/', Y)
        .then(response => {
-        console.log("YES",response);
+         Alert.alert("Build done!! id: "+ response.data.id)
+        // console.log("YES",response.data);
       }).catch(response =>{
         console.log("ERR", response);
       })

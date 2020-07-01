@@ -121,7 +121,7 @@ class Onecol extends React.Component {
       id: this.props.val,
       FieldName : "",
       Datatype:"IntegerField",
-      default : "None"
+      default : ""
      };
   }
   changekeys(m,b){
@@ -184,7 +184,19 @@ class Onecol extends React.Component {
               placeholder="None"
               selectionColor={colors.blue}
               value = { ( this.state.Datatype == "DateField" ) ? "auto_now_add" : this.state.default}
-              onChangeText={ (e) => { this.setState({default:e},()=>{this.props.changefields({data : this.state});} ) } }
+              onChangeText={ (e) => { 
+                if(this.state.Datatype != "IntegerField" && this.state.Datatype != "DateField"){
+                  if(e.length > 0 && e[e.length -1] != "\""){
+                    e = e.substring(0,e.length-1);
+                  }
+                  e = e.replace(/\"/g, "");
+                  if(e != "")
+                    e = "\""+e+"\"";
+                }
+                else{
+                  if(e[e.length - 1] >= "0" && e[e.length - 1] <= "9" ){}else return;
+                }
+                this.setState({default:e},()=>{this.props.changefields({data : this.state});} ) } }
           ></TextInput>
       </View>     
     );
